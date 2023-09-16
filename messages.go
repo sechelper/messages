@@ -36,10 +36,10 @@ func NewSuccessMessage(data interface{}) *ResponseMessage {
 	return NewResponseMessage(SuccessStatusCode, "success", data)
 }
 
-func NewBadRequestMessage() *ResponseMessage {
-	return NewResponseMessage(BadRequestStatusCode, "Bad Request", nil)
+func NewBadRequestMessage(msg string) *ResponseMessage {
+	return NewResponseMessage(BadRequestStatusCode, msg, nil)
 }
 
-func NewServerInternalErrorMessage() *ResponseMessage {
-	return NewResponseMessage(ServerInternalErrorStatusCode, "Server Internal Error", nil)
+func NewServerInternalErrorMessage(msg string) *ResponseMessage {
+	return NewResponseMessage(ServerInternalErrorStatusCode, msg, nil)
 }
