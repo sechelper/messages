@@ -1,4 +1,4 @@
-package stalker
+package messages
 
 const (
 	SuccessStatusCode             = 20000
