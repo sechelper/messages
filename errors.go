@@ -1,15 +1,18 @@
 package response
 
-func New(code StatusCode, text string) error {
-	return &errorString{code, text}
-}
-
-// errorString is a trivial implementation of error.
-type errorString struct {
+type Error struct {
 	code StatusCode
 	text string
 }
 
-func (e *errorString) Error() string {
+func NewError(code StatusCode, text string) error {
+	return &Error{code, text}
+}
+
+func (e *Error) Error() string {
 	return e.text
+}
+
+func (e *Error) StatusCode() StatusCode {
+	return e.code
 }

@@ -1,6 +1,7 @@
 package response
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/zeromicro/go-zero/rest/httpx"
@@ -12,6 +13,7 @@ const (
 	SuccessStatusCode             StatusCode = 20000
 	BadRequestStatusCode                     = 40000
 	ServerInternalErrorStatusCode            = 50000
+	UnknownErrorStatusCode                   = 90000
 )
 
 type Body struct {
@@ -22,8 +24,13 @@ type Body struct {
 
 func Response(w http.ResponseWriter, resp interface{}, err error) {
 	var body Body
+	var respError *Error
 	if err != nil {
-		body.Code = -1
+		if errors.As(err, &respError) {
+			body.Code = respError.code
+		} else {
+			body.Code = UnknownErrorStatusCode
+		}
 		body.Msg = err.Error()
 	} else {
 		body.Msg = "success"
