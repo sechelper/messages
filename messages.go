@@ -6,14 +6,16 @@ import (
 	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
+type StatusCode int
+
 const (
-	SuccessStatusCode             = 20000
-	BadRequestStatusCode          = 40000
-	ServerInternalErrorStatusCode = 50000
+	SuccessStatusCode             StatusCode = 20000
+	BadRequestStatusCode                     = 40000
+	ServerInternalErrorStatusCode            = 50000
 )
 
 type Body struct {
-	Code int         `json:"code"`
+	Code StatusCode  `json:"code"`
 	Msg  string      `json:"msg"`
 	Data interface{} `json:"data,omitempty"`
 }
@@ -30,7 +32,7 @@ func Response(w http.ResponseWriter, resp interface{}, err error) {
 	httpx.OkJson(w, body)
 }
 
-func (resp *Body) SetStatusCode(code int) {
+func (resp *Body) SetStatusCode(code StatusCode) {
 	resp.Code = code
 }
 
@@ -40,24 +42,4 @@ func (resp *Body) SetMessage(msg string) {
 
 func (resp *Body) SetData(data interface{}) {
 	resp.Data = data
-}
-
-func NewResponseMessage(code int, msg string, data interface{}) *Body {
-	return &Body{
-		Code: code,
-		Msg:  msg,
-		Data: data,
-	}
-}
-
-func NewSuccessMessage(data interface{}) *Body {
-	return NewResponseMessage(SuccessStatusCode, "success", data)
-}
-
-func NewBadRequestMessage(msg string) *Body {
-	return NewResponseMessage(BadRequestStatusCode, msg, nil)
-}
-
-func NewServerInternalErrorMessage(msg string) *Body {
-	return NewResponseMessage(ServerInternalErrorStatusCode, msg, nil)
 }
