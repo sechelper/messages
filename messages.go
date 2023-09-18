@@ -1,4 +1,10 @@
-package messages
+package response
+
+import (
+	"net/http"
+
+	"github.com/zeromicro/go-zero/rest/httpx"
+)
 
 const (
 	SuccessStatusCode             = 20000
@@ -6,40 +12,52 @@ const (
 	ServerInternalErrorStatusCode = 50000
 )
 
-type ResponseMessage struct {
-	Code    int         `json:"code"`
-	Message string      `json:"message"`
-	Data    interface{} `json:"data"`
+type Body struct {
+	Code int         `json:"code"`
+	Msg  string      `json:"msg"`
+	Data interface{} `json:"data,omitempty"`
 }
 
-func (resp *ResponseMessage) SetStatusCode(code int) {
+func Response(w http.ResponseWriter, resp interface{}, err error) {
+	var body Body
+	if err != nil {
+		body.Code = -1
+		body.Msg = err.Error()
+	} else {
+		body.Msg = "success"
+		body.Data = resp
+	}
+	httpx.OkJson(w, body)
+}
+
+func (resp *Body) SetStatusCode(code int) {
 	resp.Code = code
 }
 
-func (resp *ResponseMessage) SetMessage(msg string) {
-	resp.Message = msg
+func (resp *Body) SetMessage(msg string) {
+	resp.Msg = msg
 }
 
-func (resp *ResponseMessage) SetData(data interface{}) {
+func (resp *Body) SetData(data interface{}) {
 	resp.Data = data
 }
 
-func NewResponseMessage(code int, msg string, data interface{}) *ResponseMessage {
-	return &ResponseMessage{
-		Code:    code,
-		Message: msg,
-		Data:    data,
+func NewResponseMessage(code int, msg string, data interface{}) *Body {
+	return &Body{
+		Code: code,
+		Msg:  msg,
+		Data: data,
 	}
 }
 
-func NewSuccessMessage(data interface{}) *ResponseMessage {
+func NewSuccessMessage(data interface{}) *Body {
 	return NewResponseMessage(SuccessStatusCode, "success", data)
 }
 
-func NewBadRequestMessage(msg string) *ResponseMessage {
+func NewBadRequestMessage(msg string) *Body {
 	return NewResponseMessage(BadRequestStatusCode, msg, nil)
 }
 
-func NewServerInternalErrorMessage(msg string) *ResponseMessage {
+func NewServerInternalErrorMessage(msg string) *Body {
 	return NewResponseMessage(ServerInternalErrorStatusCode, msg, nil)
 }
