@@ -23,7 +23,11 @@ type Body struct {
 }
 
 func Response(w http.ResponseWriter, resp interface{}, err error) {
-	var body Body
+	var body = Body{
+		Code: SuccessStatusCode,
+		Msg:  "success",
+		Data: resp,
+	}
 	var respError *Error
 	if err != nil {
 		if errors.As(err, &respError) {
@@ -32,9 +36,6 @@ func Response(w http.ResponseWriter, resp interface{}, err error) {
 			body.Code = UnknownErrorStatusCode
 		}
 		body.Msg = err.Error()
-	} else {
-		body.Msg = "success"
-		body.Data = resp
 	}
 	httpx.OkJson(w, body)
 }
