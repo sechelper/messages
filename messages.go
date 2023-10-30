@@ -43,12 +43,11 @@ func Response(w http.ResponseWriter, data interface{}, err error) {
 		Msg:  "success",
 	}
 	if err != nil {
-		if errors.As(err, &ErrorMassage{}) {
+		var errorMassage ErrorMassage
+		switch {
+		case errors.As(err, &errorMassage):
 			msg.Code = err.(ErrorMassage).GetCode()
 			msg.Msg = err.(ErrorMassage).GetMsg()
-		} else {
-			msg.Code = BadRequestStatusCode
-			msg.Msg = "客户端错误"
 		}
 	}
 
