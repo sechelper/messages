@@ -2,6 +2,9 @@ package messages
 
 import "fmt"
 
+var ServerInternalError = NewErrorMessage(ServerInternalErrorStatusCode, "服务器内部错误，请稍候重试！")
+var BadRequestError = NewErrorMessage(BadRequestStatusCode, "客户端错误")
+
 type ErrorMassage struct {
 	code StatusCode
 	text string
