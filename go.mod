@@ -2,14 +2,12 @@ module github.com/sechelper/messages
 
 go 1.20
 
-require (
-	github.com/pkg/errors v0.9.1
-	github.com/zeromicro/go-zero v1.6.0
-)
+require github.com/zeromicro/go-zero v1.6.0
 
 require (
 	github.com/fatih/color v1.15.0 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
+	github.com/kr/text v0.2.0 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/pelletier/go-toml/v2 v2.1.0 // indirect
