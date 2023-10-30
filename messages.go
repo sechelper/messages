@@ -1,13 +1,12 @@
-package response
+package message
 
 import (
 	"errors"
-	"net/http"
-
 	"github.com/zeromicro/go-zero/rest/httpx"
+	"net/http"
 )
 
-type StatusCode int
+type StatusCode int32
 
 const (
 	SuccessStatusCode             StatusCode = 20000
@@ -16,38 +15,40 @@ const (
 	UnknownErrorStatusCode                   = 90000
 )
 
-type Body struct {
+type Message struct {
 	Code StatusCode  `json:"code"`
 	Msg  string      `json:"msg"`
 	Data interface{} `json:"data,omitempty"`
 }
 
-func Response(w http.ResponseWriter, resp interface{}, err error) {
-	var body = Body{
-		Code: SuccessStatusCode,
-		Msg:  "success",
-		Data: resp,
-	}
-	var respError *Error
+func NewMessage(code StatusCode, text string, body interface{}) *Message {
+	return &Message{code, text, body}
+}
+
+func (msg *Message) GetMsg() string {
+	return msg.Msg
+}
+
+func (msg *Message) StatusCode() StatusCode {
+	return msg.Code
+}
+
+func (msg *Message) GetData() interface{} {
+	return msg.Data
+}
+
+func Response(w http.ResponseWriter, data interface{}, err error) {
+	var msg = new(Message)
 	if err != nil {
-		if errors.As(err, &respError) {
-			body.Code = respError.code
+		if errors.As(err, &ErrorMassage{}) {
+			msg.Code = err.(ErrorMassage).GetCode()
+			msg.Msg = err.(ErrorMassage).GetMsg()
 		} else {
-			body.Code = UnknownErrorStatusCode
+			msg.Msg = "错误请求"
 		}
-		body.Msg = err.Error()
 	}
-	httpx.OkJson(w, body)
-}
 
-func (resp *Body) SetStatusCode(code StatusCode) {
-	resp.Code = code
-}
+	msg.Data = data
 
-func (resp *Body) SetMessage(msg string) {
-	resp.Msg = msg
-}
-
-func (resp *Body) SetData(data interface{}) {
-	resp.Data = data
+	httpx.OkJson(w, msg)
 }

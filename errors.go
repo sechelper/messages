@@ -1,18 +1,27 @@
-package response
+package message
 
-type Error struct {
+import "fmt"
+
+type ErrorMassage struct {
 	code StatusCode
 	text string
 }
 
-func NewError(code StatusCode, text string) error {
-	return &Error{code, text}
+func NewErrorMessage(code StatusCode, text string) *ErrorMassage {
+	return &ErrorMassage{
+		code: code,
+		text: text,
+	}
 }
 
-func (e *Error) Error() string {
-	return e.text
+func (err ErrorMassage) GetCode() StatusCode {
+	return err.code
 }
 
-func (e *Error) StatusCode() StatusCode {
-	return e.code
+func (err ErrorMassage) GetMsg() string {
+	return err.text
+}
+
+func (err ErrorMassage) Error() string {
+	return fmt.Sprintf("code:%d，text:%s", err.code, err.text)
 }
