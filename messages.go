@@ -20,29 +20,22 @@ type Message struct {
 	Data interface{} `json:"data,omitempty"`
 }
 
-func NewMessage(code StatusCode, text string, body interface{}) *Message {
-	return &Message{code, text, body}
-}
-
-func (msg *Message) GetMsg() string {
-	return msg.Msg
-}
-
-func (msg *Message) StatusCode() StatusCode {
-	return msg.Code
-}
-
-func (msg *Message) GetData() interface{} {
-	return msg.Data
-}
-
 func Response(w http.ResponseWriter, data interface{}, err error) {
-	var msg Message
+	var msg = Message{
+		Code: SuccessStatusCode,
+		Msg:  "成功",
+		Data: data,
+	}
 
 	if err != nil {
 		if e, ok := err.(*ErrorMassage); ok {
 			msg.Code = e.GetCode()
 			msg.Msg = e.GetMsg()
+		} else {
+			msg = Message{
+				Code: ServerInternalErrorStatusCode,
+				Msg:  "服务器内部错误，请稍候重试！",
+			}
 		}
 	}
 
