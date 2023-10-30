@@ -38,13 +38,17 @@ func (msg *Message) GetData() interface{} {
 }
 
 func Response(w http.ResponseWriter, data interface{}, err error) {
-	var msg = new(Message)
+	var msg = Message{
+		Code: SuccessStatusCode,
+		Msg:  "success",
+	}
 	if err != nil {
 		if errors.As(err, &ErrorMassage{}) {
 			msg.Code = err.(ErrorMassage).GetCode()
 			msg.Msg = err.(ErrorMassage).GetMsg()
 		} else {
-			msg.Msg = "错误请求"
+			msg.Code = BadRequestStatusCode
+			msg.Msg = "客户端错误"
 		}
 	}
 
