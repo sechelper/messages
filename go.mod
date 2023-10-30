@@ -1,10 +1,9 @@
-module github.com/sechelper/message
+module github.com/sechelper/messages
 
 go 1.20
 
 require (
 	github.com/pkg/errors v0.9.1
-	github.com/sechelper/messages v1.0.5
 	github.com/zeromicro/go-zero v1.6.0
 )
 
