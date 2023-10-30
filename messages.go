@@ -1,7 +1,6 @@
 package messages
 
 import (
-	"errors"
 	"github.com/zeromicro/go-zero/rest/httpx"
 	"net/http"
 )
@@ -38,16 +37,12 @@ func (msg *Message) GetData() interface{} {
 }
 
 func Response(w http.ResponseWriter, data interface{}, err error) {
-	var msg = Message{
-		Code: SuccessStatusCode,
-		Msg:  "success",
-	}
+	var msg Message
+
 	if err != nil {
-		var errorMassage ErrorMassage
-		switch {
-		case errors.As(err, &errorMassage):
-			msg.Code = err.(ErrorMassage).GetCode()
-			msg.Msg = err.(ErrorMassage).GetMsg()
+		if e, ok := err.(*ErrorMassage); ok {
+			msg.Code = e.GetCode()
+			msg.Msg = e.GetMsg()
 		}
 	}
 
